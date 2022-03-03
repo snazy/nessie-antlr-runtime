@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import java.time.Duration
 import org.jetbrains.gradle.ext.ActionDelegationConfig
 import org.jetbrains.gradle.ext.EncodingConfiguration
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
@@ -26,6 +27,7 @@ plugins {
   `maven-publish`
   id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.3"
   id("com.github.johnrengelman.shadow") version "7.1.2"
+  id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
 val antlrVersion = "4.9.2"
@@ -121,6 +123,15 @@ publishing {
   }
 }
 
+signing {
+  if (project.hasProperty("release")) {
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign(publishing.publications["maven"])
+  }
+}
+
 tasks.named<Jar>("jar") {
   archiveClassifier.set("raw")
 }
@@ -171,4 +182,23 @@ eclipse { project { name = ideName } }
 
 tasks.register("writeVersionFile") {
   file("./version.txt").writeText(antlrVersion)
+}
+
+// Pass environment variables:
+//    ORG_GRADLE_PROJECT_sonatypeUsername
+//    ORG_GRADLE_PROJECT_sonatypePassword
+// OR in ~/.gradle/gradle.properties set
+//    sonatypeUsername
+//    sonatypePassword
+// Call targets:
+//    publishToSonatype
+//    closeAndReleaseSonatypeStagingRepository
+nexusPublishing {
+  transitionCheckOptions {
+    // default==60 (10 minutes), wait up to 60 minutes
+    maxRetries.set(360)
+    // default 10s
+    delayBetween.set(Duration.ofSeconds(10))
+  }
+  repositories { sonatype() }
 }
