@@ -91,6 +91,8 @@ jobs:
           # Move the default auth settings in ~/.gitconfig out of the way, so the git-push can use the token
           git config --rename-section http.https://github.com/ http.https://save.github.com/
 
+          GIT_TAG="antlr-$(cat version.txt)"
+
           git push --no-verify "${UPSTREAM}" HEAD:${GITHUB_REF} ${GIT_TAG}
 
           # Move the default auth settings in ~/.gitconfig back
