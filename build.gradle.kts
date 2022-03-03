@@ -59,12 +59,13 @@ publishing {
       groupId = "${project.group}"
       artifactId = project.name
       version = "${project.version}"
-      description = "${project.description}"
       //from(components["java"])
       project.shadow.component(this)
       artifact(project.tasks.findByName("javadocJar"))
       artifact(project.tasks.findByName("sourcesJar"))
       pom {
+        name.set(project.name)
+        description.set(project.description)
         packaging = "jar"
         inceptionYear.set("2022")
         url.set("https://github.com/projectnessie/nessie-antlr-runtime")
