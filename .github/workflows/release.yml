@@ -60,7 +60,7 @@ jobs:
       - name: Record ${{ github.event.inputs.releaseVersion }} release in git
         run: |
           ./gradlew writeVersionFile
-          git commit -a -m "[release] v$(cat version.txt)"
+          git commit --allow-empty --all --message="[release] v$(cat version.txt)"
           git tag -f "antlr-$(cat version.txt)"
 
       - name: Publish to Sonatype
