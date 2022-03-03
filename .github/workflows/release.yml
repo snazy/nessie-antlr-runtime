@@ -17,6 +17,11 @@ name: Release
 on:
   # Manually triggered
   workflow_dispatch:
+    inputs:
+      patchRelease:
+        description: 'Patch release version, leave empty for default'
+        required: false
+        default: ""
 
 jobs:
   release:
@@ -57,21 +62,26 @@ jobs:
           git config --global user.email "nessie-antlr-runtime-release-noreply@projectnessie.org"
           git config --global user.name "nessie-antlr-runtime Release Workflow [bot]"
 
-      - name: Record ${{ github.event.inputs.releaseVersion }} release in git
-        run: |
-          ./gradlew writeVersionFile
-          git commit --allow-empty --all --message="[release] v$(cat version.txt)"
-          git tag -f "antlr-$(cat version.txt)"
-
       - name: Publish to Sonatype
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          PATCH_RELEASE: ${{ github.event.inputs.patchRelease }}
         run: |
           echo "sonatypeUsername=${{ secrets.OSSRH_ACCESS_ID }}" >> ~/.gradle/gradle.properties
           echo "sonatypePassword=${{ secrets.OSSRH_TOKEN }}" >> ~/.gradle/gradle.properties
 
-          ./gradlew --rerun-tasks --info assemble check publishToSonatype closeAndReleaseSonatypeStagingRepository -Prelease
+          ARGS="-Prelease"
+          if [[ -n ${PATCH_RELEASE} ]] ; then
+            ARGS="${ARGS} -PpatchRelease=${PATCH_RELEASE}"
+          fi
+
+          TASKS="writeVersionFile assemble check publishToSonatype closeAndReleaseSonatypeStagingRepository"
+
+          ./gradlew --rerun-tasks --info ${TASKS} ${ARGS}
+
+          git commit --allow-empty --all --message="[release] v$(cat version.txt)"
+          git tag -f "antlr-$(cat version.txt)"
 
       - name: Push tag + branch
         run: |

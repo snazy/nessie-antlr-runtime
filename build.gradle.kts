@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import java.time.Duration
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.gradle.ext.ActionDelegationConfig
 import org.jetbrains.gradle.ext.EncodingConfiguration
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import java.time.Duration
 
 plugins {
   eclipse
@@ -32,8 +32,10 @@ plugins {
 
 val antlrVersion = "4.9.2"
 
+val releaseVersion = "${antlrVersion}${if (project.hasProperty("patchRelease")) ".${project.property("patchRelease")}" else ""}"
+
 group = "org.projectnessie"
-version = antlrVersion
+version = releaseVersion
 description = "Relocated antlr-runtime"
 
 repositories {
@@ -161,7 +163,7 @@ idea {
       "settings" {
         val encodings: EncodingConfiguration = getProperty("encodings") as EncodingConfiguration
         val delegateActions: ActionDelegationConfig =
-            getProperty("delegateActions") as ActionDelegationConfig
+                getProperty("delegateActions") as ActionDelegationConfig
 
         delegateActions.testRunner = ActionDelegationConfig.TestRunner.CHOOSE_PER_TEST
 
@@ -182,7 +184,7 @@ if (ideaDir.isDirectory) {
 eclipse { project { name = ideName } }
 
 tasks.register("writeVersionFile") {
-  file("./version.txt").writeText(antlrVersion)
+  file("./version.txt").writeText(releaseVersion)
 }
 
 // Pass environment variables:
