@@ -43,7 +43,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ matrix.java-version }}-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('**/.gitmodules') }}
+          key: gradle-${{ matrix.java-version }}-${{ hashFiles('**/*.gradle.kts') }}
           restore-keys: gradle-${{ matrix.java-version }}
 
       - name: Build with Gradle
