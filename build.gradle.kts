@@ -57,6 +57,7 @@ publishing {
       groupId = "${project.group}"
       artifactId = project.name
       version = "${project.version}"
+      description = "${project.description}"
       //from(components["java"])
       project.shadow.component(this)
       artifact(project.tasks.findByName("javadocJar"))
