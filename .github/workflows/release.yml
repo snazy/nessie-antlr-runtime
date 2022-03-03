@@ -50,7 +50,7 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: gradle-${{ hashFiles('**/*.gradle.kts') }}
-          restore-keys: gradle-
+          restore-keys: gradle-11-
 
       - name: Configure release-bot-user in git config
         run: |
