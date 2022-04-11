@@ -68,6 +68,7 @@ jobs:
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
           PATCH_RELEASE: ${{ github.event.inputs.patchRelease }}
         run: |
+          mkdir -p ~/.gradle
           echo "sonatypeUsername=${{ secrets.OSSRH_ACCESS_ID }}" >> ~/.gradle/gradle.properties
           echo "sonatypePassword=${{ secrets.OSSRH_TOKEN }}" >> ~/.gradle/gradle.properties
 
