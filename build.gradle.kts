@@ -25,7 +25,7 @@ plugins {
   `java-library`
   signing
   `maven-publish`
-  id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.5"
+  id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.6"
   id("com.github.johnrengelman.shadow") version "7.1.2"
   id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
