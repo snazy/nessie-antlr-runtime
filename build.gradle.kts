@@ -30,7 +30,7 @@ plugins {
   id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
-val antlrVersion = "4.10.1"
+val antlrVersion = "4.11.1"
 
 val releaseVersion = "${antlrVersion}${if (project.hasProperty("patchRelease")) ".${project.property("patchRelease")}" else ""}"
 
